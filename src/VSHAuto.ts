@@ -33,6 +33,38 @@ export class VSHAuto{
             eval(fileContent);
         });
     }
+
+    static showCommandsToEditInPickUp(context: vscode.ExtensionContext){
+        const SCRIPT_PATH = context.extensionPath.replace(/\\/g, "/") + "/scripts";
+
+        VSHAuto.createScriptFolderIfNotExists(SCRIPT_PATH);
+
+        FileUtil.createFolderIfNotExists(SCRIPT_PATH);
+
+        let scriptNames: string[] = FileUtil.getDirectoryFilesList(SCRIPT_PATH);
+        let scriptNameWithoutExt: string[] = FileUtil.removeExtension(SCRIPT_PATH);
+
+        scriptNameWithoutExt = ["Create new Script..."].concat(scriptNameWithoutExt);
+
+        vscode.window.showQuickPick(scriptNameWithoutExt).then(async selection => {
+            let selectedIndex:number = scriptNameWithoutExt.indexOf('' + selection);
+
+            if(selectedIndex == 0){
+                let newScriptFileName = await vscode.window.showInputBox({title: "New script file name"});
+
+                newScriptFileName = newScriptFileName.toLowerCase().endsWith(".ts") ? newScriptFileName : newScriptFileName + ".ts";
+                
+                let newScriptFilePath = `${SCRIPT_PATH}/${newScriptFileName}`;
+
+                require("fs").writeFileSync(newScriptFilePath, "const vscode = require('vscode');\n\n", {encoding: "utf8"});
+                EditorUtil.openFile(newScriptFilePath);
+            }else{
+                let selectedFilePath:string = `${SCRIPT_PATH}/${scriptNames[selectedIndex-1]}`;
+                EditorUtil.openFile(selectedFilePath);
+            }
+        });
+    }
+
     static createScriptFolderIfNotExists(scriptPath: string) {
         const fs = require("fs");
         

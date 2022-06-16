@@ -3,11 +3,16 @@ import { VSHAuto } from './VSHAuto';
 
 export function activate(context: vscode.ExtensionContext) {
 
-	let disposable = vscode.commands.registerCommand('vshauto.showCommands', () => {
+	let showCommands = vscode.commands.registerCommand('vshauto.showCommands', () => {
 		VSHAuto.showCommandsInPickUp(context);
 	});
 
-	context.subscriptions.push(disposable);
+	let editCommands = vscode.commands.registerCommand('vshauto.editCommands', () => {
+		VSHAuto.showCommandsToEditInPickUp(context);
+	});
+
+	context.subscriptions.push(showCommands);
+	context.subscriptions.push(editCommands);
 }
 
 export function deactivate() {}
