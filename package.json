@@ -2,10 +2,11 @@
   "name": "vshauto",
   "displayName": "vshauto",
   "description": "plugin to automate vscode using javascript",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "publisher": "helliu",
   "Publisher ID": "5dcde9ef-01d4-6455-a6fb-15b2534fb464",
   "icon": "img/vshautoIcon.png",
+  "keywords": ["script", "macro", "automation", "taskautomation", "auto", "task"],
   "engines": {
     "vscode": "^1.67.0"
   },
