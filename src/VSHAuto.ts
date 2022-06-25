@@ -52,7 +52,7 @@ export class VSHAuto{
             if(selectedIndex == 0){
                 let newScriptFileName = await vscode.window.showInputBox({title: "New script file name"});
 
-                newScriptFileName = newScriptFileName.toLowerCase().endsWith(".ts") ? newScriptFileName : newScriptFileName + ".ts";
+                newScriptFileName = newScriptFileName.toLowerCase().endsWith(".js") ? newScriptFileName : newScriptFileName + ".js";
                 
                 let newScriptFilePath = `${SCRIPT_PATH}/${newScriptFileName}`;
 
