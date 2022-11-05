@@ -2,7 +2,7 @@
   "name": "vshauto",
   "displayName": "vshauto",
   "description": "plugin to automate vscode using javascript",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "publisher": "helliu",
   "Publisher ID": "5dcde9ef-01d4-6455-a6fb-15b2534fb464",
   "icon": "img/vshautoIcon.png",
@@ -14,8 +14,7 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:vshauto.showCommands",
-    "onCommand:vshauto.editCommands"
+    "*"
   ],
   "main": "./dist/extension.js",
   "contributes": {

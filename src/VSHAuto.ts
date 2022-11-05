@@ -10,8 +10,7 @@ import DefaultTemplates from './templates/defaultTemplates'
 var TerminalUtil = _TerminalUtil;
 var EditorUtil = _EditorUtil;
 
-export class VSHAuto{
-    
+export class VSHAuto{  
 
     static showCommandsInPickUp(context: vscode.ExtensionContext){
         const SCRIPT_PATH = context.extensionPath.replace(/\\/g, "/") + "/scripts";
@@ -26,12 +25,18 @@ export class VSHAuto{
         vscode.window.showQuickPick(scriptNameWithoutExt).then(selection => {
             let selectedIndex:number = scriptNameWithoutExt.indexOf('' + selection);
  
-            let selectedFilePath:string = `${SCRIPT_PATH}/${scriptNames[selectedIndex]}`;
-
-            let fileContent:string = require("fs").readFileSync(selectedFilePath).toString();
-
-            eval(fileContent);
+            VSHAuto.executeScriptByName(context, scriptNames[selectedIndex]);
         });
+    }
+
+    static executeScriptByName(context: vscode.ExtensionContext, scriptName: string) {
+        const SCRIPT_PATH = context.extensionPath.replace(/\\/g, "/") + "/scripts";
+
+        let selectedFilePath:string = `${SCRIPT_PATH}/${scriptName}`;
+
+        let fileContent:string = require("fs").readFileSync(selectedFilePath).toString();
+
+        eval(fileContent);
     }
 
     static showCommandsToEditInPickUp(context: vscode.ExtensionContext){
@@ -63,6 +68,45 @@ export class VSHAuto{
                 EditorUtil.openFile(selectedFilePath);
             }
         });
+    }
+    
+	static listAllScriptsInfo(context: vscode.ExtensionContext): any[] {
+        let commands = [];
+		const SCRIPT_PATH = context.extensionPath.replace(/\\/g, "/") + "/scripts";
+
+        VSHAuto.createScriptFolderIfNotExists(SCRIPT_PATH);
+
+        FileUtil.createFolderIfNotExists(SCRIPT_PATH);
+
+        let scriptNames: string[] = FileUtil.getDirectoryFilesList(SCRIPT_PATH);
+
+        for(let i = 0; i < scriptNames.length; i++){
+            const selectedFilePath:string = `${SCRIPT_PATH}/${scriptNames[i]}`;
+            const fileContent:string =  require("fs").readFileSync(selectedFilePath).toString();
+            const scriptName = scriptNames[i];
+            const commandName:string = VSHAuto.extractCommandName(fileContent);
+
+            commands.push({commandName, scriptName});
+        }
+
+        return commands;
+	}
+
+    private static extractCommandName(fileContent:string){
+        //matches '// command: '
+        const CMD_REGEX = /\/\/( )*?command( )*?:( )*?/;  
+        
+        let lines = fileContent.split('\n');
+
+        if(lines.length == 0)
+           return null;
+
+        let firstScriptLine = fileContent.split('\n')[0];
+
+        if(!CMD_REGEX.test(firstScriptLine))
+            return null;        
+
+        return firstScriptLine.replace(CMD_REGEX, '').replace(/ /g, '');
     }
 
     static createScriptFolderIfNotExists(scriptPath: string) {
