@@ -5,7 +5,7 @@ const vscode = require('vscode');
 export default class EditorUtil{
 
     static openFile(filePath: string){
-        var fileUri = vscode.Uri.parse("file:///" + filePath);
+        var fileUri = vscode.Uri.file(filePath);
 
         vscode.workspace.openTextDocument(fileUri).then((doc: any) => {
             vscode.window.showTextDocument(doc);
